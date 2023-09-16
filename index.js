@@ -48,7 +48,7 @@ fs.readFile(csv_path, 'utf8', (err, data) => {
   // write to file
   for (k in chunk) {
     let content = JSON.stringify(chunk[k])
-    let out_path = `./${out_dir}/${k}.js`
+    let out_path = `./${out_dir}/${k}.json`
     fs.writeFile(out_path, content, 'utf8', (err) => {
       if (err)
         console.error(out_path, err);
