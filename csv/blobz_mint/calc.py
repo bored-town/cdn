@@ -1,28 +1,42 @@
 #from web3.utils.address import to_checksum_address
 from pprint import pprint as pp
 
-"""
-csv_bt       = './bt_full.csv'
-csv_tripster = './tripster.csv'
-csv_wally    = './wally_zksync.csv' # fix zksync snap not complete
-
-addr_bt       = [ line.strip().split(',')[0].lower() for line in open(csv_bt, 'r') ]
-addr_tripster = [ line.strip().lower() for line in open(csv_tripster, 'r') ]
-addr_wally    = [ line.strip().split(',')[0].lower() for line in open(csv_wally, 'r') ]
-
-wl = set(addr_bt + addr_tripster + addr_wally)
-
-for w in sorted(wl):
-    print("{},0".format(to_checksum_address(w)))
-"""
-
-snap_wl = [
+SNAP_WL = [
     './snap_wl_x2/BLOBz Base.csv',
     './snap_wl_x2/BLOBz Mode.csv',
     './snap_wl_x2/BLOBz OP.csv',
     './snap_wl_x2/BLOBz Zora.csv',
 ]
 
-for src in snap_wl:
-    amount = sum([ int(line.strip().split(',')[1]) for line in open(src, 'r') ])
-    print(src, amount)
+SNAP_PB = [
+    './snap_public_x15/BLOBz Base.csv',
+    './snap_public_x15/BLOBz Mode.csv',
+    './snap_public_x15/BLOBz OP.csv',
+    './snap_public_x15/BLOBz Zora.csv',
+]
+
+ZERO_WALLET = '0x0000000000000000000000000000000000000000'
+
+def load_dict_from_file(src):
+    data = {}
+    for line in open(src, 'r'):
+        (addr, qty) = line.strip().split(',')
+        if addr == ZERO_WALLET:
+            continue
+        data[addr.lower()] = int(qty)
+    return data
+
+def load_round(srcs):
+    data = {}
+    for src in srcs:
+        for (addr, qty) in load_dict_from_file(src).items():
+            if data.get(addr) is None:
+                data[addr] = 0
+            data[addr] += qty
+    return data
+
+data_wl = load_round(SNAP_WL)
+data_pb = load_round(SNAP_PB)
+
+pp(data_wl)
+pp(data_pb)
