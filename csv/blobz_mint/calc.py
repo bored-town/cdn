@@ -38,5 +38,12 @@ def load_round(srcs):
 data_wl = load_round(SNAP_WL)
 data_pb = load_round(SNAP_PB)
 
-pp(data_wl)
-pp(data_pb)
+data_master = {}
+for (addr, qty) in data_wl.items():
+    data_master[addr] = { 'wl': qty }
+for (addr, qty) in data_pb.items():
+    if data_master.get(addr) is None:
+        data_master[addr] = { 'wl': 0 }
+    data_master[addr]['pb'] = qty
+
+pp(data_master)
