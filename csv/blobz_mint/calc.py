@@ -1,21 +1,23 @@
-#from web3.utils.address import to_checksum_address
+from web3.utils.address import to_checksum_address
 from pprint import pprint as pp
 
 SNAP_WL = [
-    './snap_wl_x2/BLOBz Base.csv',
-    './snap_wl_x2/BLOBz Mode.csv',
+    #'./snap_wl_x2/BLOBz Base.csv',
+    #'./snap_wl_x2/BLOBz Mode.csv',
     './snap_wl_x2/BLOBz OP.csv',
-    './snap_wl_x2/BLOBz Zora.csv',
+    #'./snap_wl_x2/BLOBz Zora.csv',
 ]
 
 SNAP_PB = [
-    './snap_public_x15/BLOBz Base.csv',
-    './snap_public_x15/BLOBz Mode.csv',
+    #'./snap_public_x15/BLOBz Base.csv',
+    #'./snap_public_x15/BLOBz Mode.csv',
     './snap_public_x15/BLOBz OP.csv',
-    './snap_public_x15/BLOBz Zora.csv',
+    #'./snap_public_x15/BLOBz Zora.csv',
 ]
 
-ZERO_WALLET = '0x0000000000000000000000000000000000000000'
+ZERO_WALLET  = '0x0000000000000000000000000000000000000000'
+BLOBZ_PER_WL = 1_000_000
+BLOBZ_PER_PB =   750_000
 
 def load_dict_from_file(src):
     data = {}
@@ -35,15 +37,49 @@ def load_round(srcs):
             data[addr] += qty
     return data
 
+def calc_blobz(info):
+    (wl, pb) = (info['wl'], info['pb'])
+
+    # 0) no nft left on public
+    if pb == 0:
+        return 0
+    # 1) mint public only
+    elif wl == 0:
+        return pb * BLOBZ_PER_PB
+    # 2.1) mint wl and transfer some out
+    # 2.2) mint wl only
+    elif wl >= pb:
+        return pb * BLOBZ_PER_WL
+    # 3) mint wl & tranfer some pb in
+    else:
+        from_pb = pb - wl
+        return (wl * BLOBZ_PER_WL) + (from_pb * BLOBZ_PER_PB)
+
 data_wl = load_round(SNAP_WL)
 data_pb = load_round(SNAP_PB)
 
 data_master = {}
 for (addr, qty) in data_wl.items():
-    data_master[addr] = { 'wl': qty }
+    data_master[addr] = { 'wl': qty, 'pb': 0 }
 for (addr, qty) in data_pb.items():
     if data_master.get(addr) is None:
-        data_master[addr] = { 'wl': 0 }
+        data_master[addr] = { 'wl': 0, 'pb': 0 }
     data_master[addr]['pb'] = qty
 
-pp(data_master)
+data_master = [
+    [
+        addr,
+        info['wl'],
+        info['pb'],
+        calc_blobz(info),
+    ]
+    for (addr, info) in data_master.items()
+]
+
+# remove 0 BLOBz, sort from max to min
+data_master = filter(lambda data: data[3] > 0, data_master)
+data_master = sorted(data_master, key=lambda x: (-x[3], x[0]))
+
+# print output
+for (addr, wl, pb, blobz) in data_master:
+    print('{},{},{},{}'.format(to_checksum_address(addr), wl, pb, blobz))
