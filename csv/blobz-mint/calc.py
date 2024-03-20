@@ -77,7 +77,7 @@ data_master = [
 ]
 
 # remove 0 BLOBz, sort from max to min
-data_master = filter(lambda data: data[3] > 0, data_master)
+# data_master = filter(lambda data: data[3] > 0, data_master)
 data_master = sorted(data_master, key=lambda x: (-x[3], x[0]))
 
 # print output
