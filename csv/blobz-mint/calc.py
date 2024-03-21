@@ -55,9 +55,11 @@ def calc_blobz(info):
         from_pb = pb - wl
         return (wl * BLOBZ_PER_WL) + (from_pb * BLOBZ_PER_PB)
 
+# load mint data
 data_wl = load_round(SNAP_WL)
 data_pb = load_round(SNAP_PB)
 
+# combine 2 rounds
 chunk = {}
 for (addr, qty) in data_wl.items():
     chunk[addr] = { 'addr': addr, 'wl': qty, 'pb': 0 }
@@ -66,20 +68,18 @@ for (addr, qty) in data_pb.items():
         chunk[addr] = { 'addr': addr, 'wl': 0, 'pb': 0 }
     chunk[addr]['pb'] = qty
 
-chunk = [
-    [
-        info['addr'],
-        info['wl'],
-        info['pb'],
-        calc_blobz(info),
-    ]
-    for (addr, info) in chunk.items()
-]
+# reshape to list
+chunk = chunk.values()
+
+# calc blobz
+for c in chunk:
+    c['blobz'] = calc_blobz(c)
 
 # remove 0 BLOBz, sort from max to min
-# chunk = filter(lambda data: data[3] > 0, chunk)
-chunk = sorted(chunk, key=lambda x: (-x[3], x[0]))
+chunk = filter(lambda c: c['blobz'] > 0, chunk)
+chunk = sorted(chunk, key=lambda c: (-c['blobz'], c['addr']))
 
 # print output
-for (addr, wl, pb, blobz) in chunk:
+for c in chunk:
+    (addr, wl, pb, blobz) = (c['addr'], c['wl'], c['pb'], c['blobz'])
     print('{},{},{},{}'.format(to_checksum_address(addr), wl, pb, blobz))
