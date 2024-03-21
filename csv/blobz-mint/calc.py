@@ -79,7 +79,17 @@ for c in chunk:
 chunk = filter(lambda c: c['blobz'] > 0, chunk)
 chunk = sorted(chunk, key=lambda c: (-c['blobz'], c['addr']))
 
+# add no
+cur_no = None
+cur_points = None
+for (idx, info) in enumerate(chunk):
+    if info['blobz'] != cur_points:
+        cur_no = idx + 1
+        cur_points = info['blobz']
+    info['no'] = cur_no
+
 # print output
+print("#,Address,WL,Public,$BLOBZ")
 for c in chunk:
-    (addr, wl, pb, blobz) = (c['addr'], c['wl'], c['pb'], c['blobz'])
-    print('{},{},{},{}'.format(to_checksum_address(addr), wl, pb, blobz))
+    (no, addr, wl, pb, blobz) = (c['no'], c['addr'], c['wl'], c['pb'], c['blobz'])
+    print('{},{},{},{},{}'.format(no, to_checksum_address(addr), wl, pb, blobz))
