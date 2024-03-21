@@ -58,28 +58,28 @@ def calc_blobz(info):
 data_wl = load_round(SNAP_WL)
 data_pb = load_round(SNAP_PB)
 
-data_master = {}
+chunk = {}
 for (addr, qty) in data_wl.items():
-    data_master[addr] = { 'wl': qty, 'pb': 0 }
+    chunk[addr] = { 'addr': addr, 'wl': qty, 'pb': 0 }
 for (addr, qty) in data_pb.items():
-    if data_master.get(addr) is None:
-        data_master[addr] = { 'wl': 0, 'pb': 0 }
-    data_master[addr]['pb'] = qty
+    if chunk.get(addr) is None:
+        chunk[addr] = { 'addr': addr, 'wl': 0, 'pb': 0 }
+    chunk[addr]['pb'] = qty
 
-data_master = [
+chunk = [
     [
-        addr,
+        info['addr'],
         info['wl'],
         info['pb'],
         calc_blobz(info),
     ]
-    for (addr, info) in data_master.items()
+    for (addr, info) in chunk.items()
 ]
 
 # remove 0 BLOBz, sort from max to min
-# data_master = filter(lambda data: data[3] > 0, data_master)
-data_master = sorted(data_master, key=lambda x: (-x[3], x[0]))
+# chunk = filter(lambda data: data[3] > 0, chunk)
+chunk = sorted(chunk, key=lambda x: (-x[3], x[0]))
 
 # print output
-for (addr, wl, pb, blobz) in data_master:
+for (addr, wl, pb, blobz) in chunk:
     print('{},{},{},{}'.format(to_checksum_address(addr), wl, pb, blobz))
