@@ -2,16 +2,16 @@ from web3.utils.address import to_checksum_address
 from pprint import pprint as pp
 
 SNAP_WL = [
-    #'./snap_wl_x2/BLOBz Base.csv',
+    './snap_wl_x2/BLOBz Base.csv',
     #'./snap_wl_x2/BLOBz Mode.csv',
-    './snap_wl_x2/BLOBz OP.csv',
+    #'./snap_wl_x2/BLOBz OP.csv',
     #'./snap_wl_x2/BLOBz Zora.csv',
 ]
 
 SNAP_PB = [
-    #'./snap_public_x15/BLOBz Base.csv',
+    './snap_public_x15/BLOBz Base.csv',
     #'./snap_public_x15/BLOBz Mode.csv',
-    './snap_public_x15/BLOBz OP.csv',
+    #'./snap_public_x15/BLOBz OP.csv',
     #'./snap_public_x15/BLOBz Zora.csv',
 ]
 
