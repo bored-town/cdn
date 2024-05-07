@@ -1,0 +1,38 @@
+$BLOBZ Chapter 1 Claim Deadline - 2,887
+https://snapshot.org/#/blobzxyz.eth/proposal/0xa0c070726ee54b81133e5a2a834ed7d44b6d576c778a059bb633b47fbdcf19cd
+
+Choose the next collection for $BLOBZ NFT holder distribution - 3,265
+https://snapshot.org/#/blobzxyz.eth/proposal/0x2eff7ab281a02eefacc5c3859d074e86bbf031c8dab9e9ad1aa906f5a6c6f44f
+
+Choose the next collection for $BLOBZ NFT holder distribution - 1,685
+https://snapshot.org/#/blobzxyz.eth/proposal/0x3376cb796fd0602350c6a5cb8c465d98bf321f6943fab0c840c84449cd66d3e1
+
+$BLOBZ Chapter 2 Claim Deadline - 1,613
+https://snapshot.org/#/blobzxyz.eth/proposal/0x9165b23480773f3372ca2317e252ea47aa7ac376777ecae0b36b7c871acfa4e8
+
+Vote on BLOBz FWX Allocation Now! - 1,625
+https://snapshot.org/#/blobzxyz.eth/proposal/0xcf2370820458433b8094ef1eff1214b33d2cacf666662ead9f1d8c8fa056150d
+
+``` api -> json
+https://hub.snapshot.org/graphql
+https://docs.snapshot.org/tools/api#votes
+-----------------------------------------
+query {
+  votes (
+    first: 1000
+    skip: 0
+    where: {
+      proposal: "0xa0c070726ee54b81133e5a2a834ed7d44b6d576c778a059bb633b47fbdcf19cd"
+    }
+    orderBy: "created",
+    orderDirection: desc
+  ) {
+    voter
+  }
+}
+
+*** Top 10 has 1180 voters but limit query is 1000
+    so combine between 2 queries
+      1. first: 1000, skip: 0  (first 1000)
+      2. first: 1000, skip: 1000 (180 left)
+```
