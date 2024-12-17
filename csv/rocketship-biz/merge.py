@@ -9,13 +9,14 @@ snapshot = [
     './Space BLOBz Tier C.csv',
     './Space BLOBz Tier S.csv',
     './Tripster Travel Pass.csv',
+    './wallet-collab1.csv',
+    './wallet-collab2.csv',
 ]
 ban_addrs = [
     '0x0000000000000000000000000000000000000000',
     '0x000000000000000000000000000000000000dEaD',
 ]
 ref_program = './referral-program.json'
-# TODO partner
 
 wl = set()
 
@@ -31,8 +32,6 @@ for csv in snapshot:
 with open(ref_program, 'r') as file:
     data = [ addr.lower() for addr in json.load(file) ]
     wl.update(data)
-
-# TODO partner
 
 # remove ban addresses
 for addr in ban_addrs:
